@@ -318,6 +318,7 @@ typedef struct oidc_dir_cfg {
 	char *cookie;
 	char *authn_header;
 	int return401;
+	int allow_unauthenticated;
 	apr_array_header_t *pass_cookies;
 	apr_byte_t pass_info_in_headers;
 	apr_byte_t pass_info_in_env_vars;

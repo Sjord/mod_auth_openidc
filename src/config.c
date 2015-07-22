@@ -1184,6 +1184,7 @@ void *oidc_create_dir_config(apr_pool_t *pool, char *path) {
 	c->cookie_path = OIDC_DEFAULT_COOKIE_PATH;
 	c->authn_header = OIDC_DEFAULT_AUTHN_HEADER;
 	c->return401 = FALSE;
+	c->allow_unauthenticated = FALSE;
 	c->pass_cookies = apr_array_make(pool, 0, sizeof(const char *));
 	c->pass_info_in_headers = 1;
 	c->pass_info_in_env_vars = 1;
@@ -1209,6 +1210,7 @@ void *oidc_merge_dir_config(apr_pool_t *pool, void *BASE, void *ADD) {
 			add->authn_header != OIDC_DEFAULT_AUTHN_HEADER ?
 					add->authn_header : base->authn_header);
 	c->return401 = (add->return401 != FALSE ? add->return401 : base->return401);
+	c->allow_unauthenticated = (add->allow_unauthenticated != FALSE ? add->allow_unauthenticated : base->allow_unauthenticated);
 	c->pass_cookies = (
 			apr_is_empty_array(add->pass_cookies) != 0 ?
 					add->pass_cookies : base->pass_cookies);
@@ -1968,6 +1970,10 @@ const command_rec oidc_config_cmds[] = {
 				(void *) APR_OFFSETOF(oidc_dir_cfg, return401),
 				RSRC_CONF|ACCESS_CONF|OR_AUTHCFG,
 				"Indicates whether a user will be redirected to the Provider when not authenticated (Off) or a 401 will be returned (On)."),
+		AP_INIT_FLAG("OIDCAllowUnauthenticated", ap_set_flag_slot,
+				(void *) APR_OFFSETOF(oidc_dir_cfg, allow_unauthenticated),
+				RSRC_CONF|ACCESS_CONF|OR_AUTHCFG,
+				"Allow unauthenticated users to access this location."),
 		AP_INIT_TAKE1("OIDCPassClaimsAs",
 				oidc_set_pass_claims_as, NULL,
 				RSRC_CONF|ACCESS_CONF|OR_AUTHCFG,

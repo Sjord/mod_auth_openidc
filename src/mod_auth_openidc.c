@@ -2194,6 +2194,11 @@ static int oidc_check_userid_openidc(request_rec *r, oidc_cfg *c) {
 
 	oidc_dir_cfg *dir_cfg = ap_get_module_config(r->per_dir_config,
 			&auth_openidc_module);
+
+	if (dir_cfg->allow_unauthenticated) {
+		return OK;
+	}
+
 	if (dir_cfg->return401)
 		return HTTP_UNAUTHORIZED;
 
